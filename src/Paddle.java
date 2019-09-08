@@ -1,3 +1,7 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -5,18 +9,25 @@ import javafx.scene.shape.Shape;
 public class Paddle implements Sprite{
 	
 	Coordinates coordinates;
-	private double speed;
 	private double length;
 	private double breadth;
 	private Color color;
-	public Shape paddle;
-	Paddle(double speed,double length,double breadth,Color color,Coordinates coordinates){
+	public Shape shape;
+	private Stack<Double> batPositionX = new Stack<Double>();
+	private Stack<Double> batPositionY = new Stack<Double>();
+	private Queue<Double> qbatPositionX = new LinkedList<>();
+	private Queue<Double> qbatPositionY = new LinkedList<>();
+	
+	Paddle(double length,double breadth,Color color,Coordinates coordinates,Shape shape){
 		this.coordinates=coordinates;
-		this.speed=speed;
 		this.length=length;
 		this.breadth=breadth;
 		this.color=color;
-		this.paddle=new Rectangle(coordinates.getLocationX(),coordinates.getLocationY(),length,breadth);
+		this.shape=new Rectangle(length,breadth);
+		System.out.println(coordinates.getLocationX()+" "+coordinates.getLocationX());
+		this.shape.setTranslateX(coordinates.getLocationX());
+		this.shape.setTranslateY(coordinates.getLocationY());
+		this.shape.setFill(color);
 	}
 	
 	@Override
@@ -42,7 +53,7 @@ public class Paddle implements Sprite{
 	public void drawX(double locX) {
 		// TODO Auto-generated method stub
 		
-		paddle.setTranslateX(locX);
+		shape.setTranslateX(locX);
 		//paddle.setTranslateY(locY);
 	}
 
@@ -56,6 +67,36 @@ public class Paddle implements Sprite{
 	@Override
 	public void drawY(double locY) {
 		// TODO Auto-generated method stub
-		paddle.setTranslateY(locY);
+		shape.setTranslateY(locY);
+	}
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
+		shape.setTranslateX(batPositionX.pop());
+		shape.setTranslateY(batPositionY.pop());
+	}
+
+	@Override
+	public void save(double x, double y) {
+		// TODO Auto-generated method stub
+		batPositionX.push(x);
+		batPositionY.push(y);
+		
+		qbatPositionX.add(x);
+		qbatPositionY.add(y);
+	}
+	
+	@Override
+	public void unsave() {
+		// TODO Auto-generated method stub
+		System.out.println(batPositionX.peek());
+		shape.setTranslateX(batPositionX.pop());
+		shape.setTranslateY(batPositionY.pop());
+	}
+	
+	public void redo() {
+		shape.setTranslateX(qbatPositionX.poll());
+		shape.setTranslateY(qbatPositionY.poll());
 	}
 }

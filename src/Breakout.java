@@ -39,6 +39,7 @@ public class Breakout extends Application {
 /*Creating ball with radius*/
 	private static final int BALL_RADIUS = 10;
 	private Circle ball = new Circle(BALL_RADIUS);
+
 	private boolean ballUp = true, ballLeft = false;
 	private Timeline timeline = new Timeline();
 	
@@ -165,6 +166,8 @@ public class Breakout extends Application {
 		timeline2.setCycleCount(Timeline.INDEFINITE);
 		return root;
 	}
+
+	
 
 	private void restartGame() {
 		stopGame();
